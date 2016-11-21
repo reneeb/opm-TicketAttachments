@@ -1,0 +1,53 @@
+# --
+# AgentAttachmentRename.tt - provides HTML form for attachment rename mask
+# Copyright (C) 2012 Perl-Services.de, http://perl-services.de
+# --
+# $Id: AgentAttachmentRename.dtl,v 1.52 2010/12/14 12:42:20 mb Exp $
+# --
+# This software comes with ABSOLUTELY NO WARRANTY. For details, see
+# the enclosed file COPYING for license information (AGPL). If you
+# did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
+# --
+
+<form action="[% Env("CGIHandle") %]" method="post" enctype="multipart/form-data" name="compose" class="Validate PreventMultipleSubmits">
+    <input type="hidden" name="Action"    value="AgentAttachmentRename"/>
+    <input type="hidden" name="Subaction" value="Rename"/>
+    <input type="hidden" name="TicketID"  value="[% Data.TicketID | html %]"/>
+    <input type="hidden" name="FileID"    value="[% Data.FileID | html %]"/>
+    <input type="hidden" name="ArticleID" value="[% Data.ArticleID | html %]"/>
+
+    <div class="LayoutPopup ARIARoleMain">
+        <div class="Header">
+            <h1>[% Translate("Rename Attachment") | html %]: [% Data.Filename | html %]</h1>
+            <p>
+                <a class="CancelClosePopup" href="#">[% Translate("Cancel & close window") | html %]</a>
+            </p>
+        </div>
+        <div class="Content">
+
+            <div class="Header">
+                <h2>[% Translate("Options") | html %]</h2>
+            </div>
+
+            <div class="Content">
+                <fieldset class="TableLike FixedLabel">
+
+                    <label class="Mandatory" for="NewFilename">
+                        <span class="Marker">*</span>
+                        [% Translate("Rename to") | html %]:
+                    </label>
+                    <div class="Field">
+                        <input type="text" id="NewFilename" name="NewFilename" value="[% Data.NewFilename | html %]" class="Validate_Required [% Data.NewFilenameInvalid %] W33pc" />
+                        <div id="NewFilenameError" class="TooltipErrorMessage"><p>[% Translate("Invalid filename!") | html %]</p></div>
+                        <div id="NewFilenameServerError" class="TooltipErrorMessage"><p>[% Translate("Invalid filename!") | html %]</p></div>
+                    </div>
+                    <div class="Clear"></div>
+
+                </fieldset>
+            </div>
+        </div>
+        <div class="Footer">
+            <button class="Primary" id="submitRichText" accesskey="g" title="[% Translate("Submit") | html %] (g)" type="submit" value="[% Translate("Submit") | html %]">[% Translate("Submit") | html %]</button>
+        </div>
+    </div>
+</form>

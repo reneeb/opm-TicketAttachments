@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<otrs_package version="1.0">
+    <Name>TicketAttachments</Name>
+    <Version>1.2.3</Version>
+    <Framework>5.0.x</Framework>
+    <Vendor>Perl-Services.de</Vendor>
+    <URL>http://www.perl-services.de/</URL>
+    <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
+    <Description Lang="en">Show all attachments that belong to the ticket in an extra widget in ticket zoom.</Description>
+    <Description Lang="de">Zeige alle Anhänge eines Tickets in einer extra Box in der Ticketansicht.</Description>
+    <Filelist>
+        <File Permission="644" Location="doc/en/TicketAttachments.pod"/>
+        <File Permission="644" Location="Kernel/Config/Files/TicketAttachments.xml"/>
+        <File Permission="644" Location="Kernel/Language/de_TicketAttachments.pm"/>
+        <File Permission="644" Location="Kernel/Language/en_TicketAttachments.pm"/>
+        <File Permission="644" Location="Kernel/Modules/AgentAttachmentDelete.pm"/>
+        <File Permission="644" Location="Kernel/Modules/AgentAttachmentRename.pm"/>
+        <File Permission="644" Location="Kernel/Output/HTML/OutputFilter/Attachmentlist.pm"/>
+        <File Permission="644" Location="Kernel/Output/HTML/Templates/Standard/ShowTicketAttachmentlistSnippet.tt"/>
+        <File Permission="644" Location="Kernel/Output/HTML/Templates/Standard/AgentAttachmentRename.tt"/>
+        <File Permission="644" Location="Kernel/System/Ticket/ArticleStorageTSALDB.pm"/>
+        <File Permission="644" Location="Kernel/System/Ticket/ArticleStorageTSALFS.pm"/>
+    </Filelist>
+    <DatabaseInstall Type="pre">
+        <Insert Table="ticket_history_type">
+            <Data Key="name" Type="Quote">AttachmentRename</Data>
+            <Data Key="comments" Type="Quote">Rename an attachment</Data>
+            <Data Key="valid_id">1</Data>
+            <Data Key="create_time" Type="Quote">2012-10-18 00:00:00</Data>
+            <Data Key="create_by" Type="Quote">1</Data>
+            <Data Key="change_time" Type="Quote">2012-10-18 00:00:00</Data>
+            <Data Key="change_by" Type="Quote">1</Data>
+        </Insert>
+        <Insert Table="ticket_history_type">
+            <Data Key="name" Type="Quote">AttachmentDelete</Data>
+            <Data Key="comments" Type="Quote">Delete an attachment</Data>
+            <Data Key="valid_id">1</Data>
+            <Data Key="create_time" Type="Quote">2012-10-18 00:00:00</Data>
+            <Data Key="create_by" Type="Quote">1</Data>
+            <Data Key="change_time" Type="Quote">2012-10-18 00:00:00</Data>
+            <Data Key="change_by" Type="Quote">1</Data>
+        </Insert>
+    </DatabaseInstall>
+    <DatabaseUpgrade Type="post">
+        <Insert Table="ticket_history_type" Version="1.0.1">
+            <Data Key="name" Type="Quote">AttachmentRename</Data>
+            <Data Key="comments" Type="Quote">Rename an attachment</Data>
+            <Data Key="valid_id">1</Data>
+            <Data Key="create_time" Type="Quote">2012-10-18 00:00:00</Data>
+            <Data Key="create_by" Type="Quote">1</Data>
+            <Data Key="change_time" Type="Quote">2012-10-18 00:00:00</Data>
+            <Data Key="change_by" Type="Quote">1</Data>
+        </Insert>
+        <Insert Table="ticket_history_type" Version="1.0.1">
+            <Data Key="name" Type="Quote">AttachmentDelete</Data>
+            <Data Key="comments" Type="Quote">Delete an attachment</Data>
+            <Data Key="valid_id">1</Data>
+            <Data Key="create_time" Type="Quote">2012-10-18 00:00:00</Data>
+            <Data Key="create_by" Type="Quote">1</Data>
+            <Data Key="change_time" Type="Quote">2012-10-18 00:00:00</Data>
+            <Data Key="change_by" Type="Quote">1</Data>
+        </Insert>
+    </DatabaseUpgrade>
+    <IntroInstall Type="post" Lang="en">
+      <![CDATA[
+        If you use ArticleStorageDB, you have to switch it to ArticleStorageTSALDB.
+        If you use ArticleStorageFS, you have to switch it to ArticleStorageTSALFS.
+        You can change the settings via SysConfig. The option can be found in 
+        group "Ticket" and subgroup "Core::Ticket".<br /><br />
+      ]]>
+    </IntroInstall>
+    <IntroUninstall Type="pre" Lang="en">
+      <![CDATA[
+        Don't forget to switch back to the original ArticleStorage type!
+      ]]>
+    </IntroUninstall>
+</otrs_package>

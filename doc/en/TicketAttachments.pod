@@ -1,0 +1,65 @@
+=head1 NAME
+
+TicketAttachments - handle attachments of a ticket
+
+=head1 DESCRIPTION
+
+This module shows all attachments of a ticket in a new widget in the ticket zoom.
+It lists all attachments and shows the dates so you can identify the right attachments.
+All attachments are linked, so you can download them.
+
+The list of the attachments can be grouped by the article they belong to. The article
+is linked, so you can view the article with a single click.
+
+If enabled, your agents can delete and/or rename single attachments. This helps to 
+identify important attachments more easily.
+
+The admin can define a list of filenames that should not appear in the widget. That way,
+signatures (like I<smime.p7s>) do not fill the list of attachments
+
+=head1 PRO VERSION
+
+An extended version can be found on L<http://feature-addons.de/otrs/Ticket%20Zoom/TicketAttachments>
+with those additional features:
+
+=over 4
+
+=item * Search for Attachments
+
+=item * Delete Attachments based on various filters
+
+=over 4
+
+=item * Filesize
+
+=item * Ticket state
+
+=item * Filename
+
+=back
+
+=item * Simple reuse of Attachments in Compose and/or Forware dialog
+
+=item * Download of all attachments in a ticket as a .zip file
+
+=item * Download of all attachments in an article as a .zip file
+
+=back
+
+=head1 ACKNOWLEDGEMENTS
+
+=over 4
+
+=item Moritz Lenz
+
+* Small patch to toggle the widget content
+
+=back
+
+=head1 AUTHOR AND LICENSE
+
+Copyright (c) 2012 - 2014 Renee Baecker (Perl-Services.de)
+
+This module is licensed under the AGPL 3.
+
+=cut
