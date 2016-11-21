@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <otrs_config version="1.0" init="Config">
     <ConfigItem Name="Frontend::Output::FilterElementPost###OutputFilterAttachments" Required="0" Valid="1">
         <Description Translatable="1">Modul to show ticket attachments.</Description>
@@ -22,8 +22,8 @@
         <SubGroup>Core</SubGroup>
         <Setting>
             <Option SelectedID="0">
-                <Item Key="0">No</Item>
-                <Item Key="1">Yes</Item>
+                <Item Key="0" Translatable="1">No</Item>
+                <Item Key="1" Translatable="1">Yes</Item>
             </Option>
         </Setting>
     </ConfigItem>
@@ -33,8 +33,8 @@
         <SubGroup>Core</SubGroup>
         <Setting>
             <Option SelectedID="0">
-                <Item Key="0">No</Item>
-                <Item Key="1">Yes</Item>
+                <Item Key="0" Translatable="1">No</Item>
+                <Item Key="1" Translatable="1">Yes</Item>
             </Option>
         </Setting>
     </ConfigItem>
@@ -44,34 +44,32 @@
         <SubGroup>Core</SubGroup>
         <Setting>
             <Option SelectedID="0">
-                <Item Key="0">No</Item>
-                <Item Key="1">Yes</Item>
+                <Item Key="0" Translatable="1">No</Item>
+                <Item Key="1" Translatable="1">Yes</Item>
             </Option>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Frontend::Module###AgentAttachmentDelete" Required="0" Valid="1">
-        <Description Lang="en">Frontend module registration for attachment deletion module.</Description>
-        <Description Lang="de">Frontendmodul-Registration für das Anhang-Löschen-Modul.</Description>
+        <Description Translatable="1">Frontend module registration for attachment deletion module.</Description>
         <Group>TicketAttachments</Group>
         <SubGroup>Frontend::Agent::ModuleRegistration</SubGroup>
         <Setting>
             <FrontendModuleReg>
-                <Description>Delete Ticket Attachments</Description>
+                <Description Translatable="1">Delete ticket attachments.</Description>
                 <NavBarName>Ticket</NavBarName>
-                <Title>Delete Ticket Attachments</Title>
+                <Title Translatable="1">Delete Ticket Attachments</Title>
             </FrontendModuleReg>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Frontend::Module###AgentAttachmentRename" Required="0" Valid="1">
-        <Description Lang="en">Frontend module registration for attachment rename module.</Description>
-        <Description Lang="de">Frontendmodul-Registration für das Anhang-Umbenennen-Modul.</Description>
+        <Description Translatable="1">Frontend module registration for attachment rename module.</Description>
         <Group>TicketAttachments</Group>
         <SubGroup>Frontend::Agent::ModuleRegistration</SubGroup>
         <Setting>
             <FrontendModuleReg>
-                <Description>Rename Ticket Attachments</Description>
+                <Description Translatable="1">Rename ticket attachments.</Description>
                 <NavBarName>Ticket</NavBarName>
-                <Title>Rename Ticket Attachments</Title>
+                <Title Translatable="1">Rename Ticket Attachments</Title>
             </FrontendModuleReg>
         </Setting>
     </ConfigItem>
@@ -91,19 +89,19 @@
         <SubGroup>Core</SubGroup>
         <Setting>
             <Option SelectedID="string_match">
-                <Item Key="string_match">exact string match</Item>
-                <Item Key="pattern_match">pattern match</Item>
+                <Item Key="string_match" Translatable="1">exact string match</Item>
+                <Item Key="pattern_match" Translatable="1">pattern match</Item>
             </Option>
         </Setting>
     </ConfigItem>
     <ConfigItem Name="Attachmentlist::Debug" Required="0" Valid="1">
-        <Description Translatable="1">Enable/Disable debugging output</Description>
+        <Description Translatable="1">Enable/Disable debugging output.</Description>
         <Group>TicketAttachments</Group>
         <SubGroup>Core</SubGroup>
         <Setting>
             <Option SelectedID="0">
-                <Item Key="0">No</Item>
-                <Item Key="1">Yes</Item>
+                <Item Key="0" Translatable="1">No</Item>
+                <Item Key="1" Translatable="1">Yes</Item>
             </Option>
         </Setting>
     </ConfigItem>
@@ -113,8 +111,8 @@
         <SubGroup>Core</SubGroup>
         <Setting>
             <Option SelectedID="top">
-                <Item Key="top">Top</Item>
-                <Item Key="bottom">Bottom</Item>
+                <Item Key="top" Translatable="1">Top</Item>
+                <Item Key="bottom" Translatable="1">Bottom</Item>
             </Option>
         </Setting>
     </ConfigItem>

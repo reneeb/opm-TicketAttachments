@@ -1,3 +1,5 @@
+=encoding utf-8
+
 =head1 NAME
 
 TicketAttachments - handle attachments of a ticket
@@ -15,7 +17,7 @@ If enabled, your agents can delete and/or rename single attachments. This helps 
 identify important attachments more easily.
 
 The admin can define a list of filenames that should not appear in the widget. That way,
-signatures (like I<smime.p7s>) do not fill the list of attachments
+signatures (like I<smime.p7s>) do not fill the list of attachments.
 
 =head1 PRO VERSION
 
@@ -38,7 +40,7 @@ with those additional features:
 
 =back
 
-=item * Simple reuse of Attachments in Compose and/or Forware dialog
+=item * Simple reuse of Attachments in Compose and/or Forward dialog
 
 =item * Download of all attachments in a ticket as a .zip file
 
@@ -54,11 +56,15 @@ with those additional features:
 
 * Small patch to toggle the widget content
 
+=item Balázs Úr
+
+* Hungarian translation
+
 =back
 
 =head1 AUTHOR AND LICENSE
 
-Copyright (c) 2012 - 2014 Renee Baecker (Perl-Services.de)
+Copyright (c) 2012-2016 Renee Baecker (Perl-Services.de)
 
 This module is licensed under the AGPL 3.
 

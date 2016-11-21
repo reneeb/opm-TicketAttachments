@@ -1,6 +1,6 @@
 # --
 # Kernel/Modules/AgentAttachmentRename.pm - to get a closer view
-# Copyright (C) 2012 - 2014 Perl-Services.de, http://perl-services.de
+# Copyright (C) 2012-2016 Perl-Services.de, http://perl-services.de
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -12,6 +12,7 @@ package Kernel::Modules::AgentAttachmentRename;
 use strict;
 use warnings;
 
+use Kernel::Language qw(Translatable);
 use List::Util qw(first);
 
 our $VERSION = 0.02;
@@ -49,16 +50,16 @@ sub Run {
     # check needed stuff
     if ( !$GetParam{ArticleID} ) {
         return $LayoutObject->ErrorScreen(
-            Message => 'No ArticleID is given!',
-            Comment => 'Please contact the admin.',
+            Message => Translatable('No ArticleID is given!'),
+            Comment => Translatable('Please contact the administrator.'),
         );
     }
 
     # check needed stuff
     if ( !$ConfigObject->Get( 'Attachmentlist::CanRename' ) ) {
         return $LayoutObject->ErrorScreen(
-            Message => 'Attachment rename is not allowed!',
-            Comment => 'Please contact the admin.',
+            Message => Translatable('Attachment rename is not allowed!'),
+            Comment => Translatable('Please contact the administrator.'),
         );
     }
 
@@ -69,8 +70,8 @@ sub Run {
 
     if ( !%Article ) {
         return $LayoutObject->ErrorScreen(
-            Message => 'Article not found',
-            Comment => 'Please contact the admin.',
+            Message => Translatable('Article not found'),
+            Comment => Translatable('Please contact the administrator.'),
         );
     }
 
@@ -99,8 +100,8 @@ sub Run {
         );
 
         $Output .= $LayoutObject->Warning(
-            Message => 'Sorry, you need "rw permissions" to do this action!',
-            Comment => 'Please change the owner first.',
+            Message => Translatable('Sorry, you need "rw permissions" to do this action!'),
+            Comment => Translatable('Please change the owner first.'),
         );
 
         $Output .= $LayoutObject->Footer(

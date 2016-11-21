@@ -8,11 +8,14 @@
     <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
     <Description Lang="en">Show all attachments that belong to the ticket in an extra widget in ticket zoom.</Description>
     <Description Lang="de">Zeige alle Anhänge eines Tickets in einer extra Box in der Ticketansicht.</Description>
+    <Description Lang="hu">A jegyhez tartozó összes melléklet megjelenítése egy további felületi elemen a jegynagyításban.</Description>
     <Filelist>
         <File Permission="644" Location="doc/en/TicketAttachments.pod"/>
+        <File Permission="644" Location="doc/hu/TicketAttachments.pod"/>
         <File Permission="644" Location="Kernel/Config/Files/TicketAttachments.xml"/>
         <File Permission="644" Location="Kernel/Language/de_TicketAttachments.pm"/>
         <File Permission="644" Location="Kernel/Language/en_TicketAttachments.pm"/>
+        <File Permission="644" Location="Kernel/Language/hu_TicketAttachments.pm"/>
         <File Permission="644" Location="Kernel/Modules/AgentAttachmentDelete.pm"/>
         <File Permission="644" Location="Kernel/Modules/AgentAttachmentRename.pm"/>
         <File Permission="644" Location="Kernel/Output/HTML/OutputFilter/Attachmentlist.pm"/>
@@ -26,19 +29,19 @@
             <Data Key="name" Type="Quote">AttachmentRename</Data>
             <Data Key="comments" Type="Quote">Rename an attachment</Data>
             <Data Key="valid_id">1</Data>
-            <Data Key="create_time" Type="Quote">2012-10-18 00:00:00</Data>
-            <Data Key="create_by" Type="Quote">1</Data>
-            <Data Key="change_time" Type="Quote">2012-10-18 00:00:00</Data>
-            <Data Key="change_by" Type="Quote">1</Data>
+            <Data Key="create_time">current_timestamp</Data>
+            <Data Key="create_by">1</Data>
+            <Data Key="change_time">current_timestamp</Data>
+            <Data Key="change_by">1</Data>
         </Insert>
         <Insert Table="ticket_history_type">
             <Data Key="name" Type="Quote">AttachmentDelete</Data>
             <Data Key="comments" Type="Quote">Delete an attachment</Data>
             <Data Key="valid_id">1</Data>
-            <Data Key="create_time" Type="Quote">2012-10-18 00:00:00</Data>
-            <Data Key="create_by" Type="Quote">1</Data>
-            <Data Key="change_time" Type="Quote">2012-10-18 00:00:00</Data>
-            <Data Key="change_by" Type="Quote">1</Data>
+            <Data Key="create_time">current_timestamp</Data>
+            <Data Key="create_by">1</Data>
+            <Data Key="change_time">current_timestamp</Data>
+            <Data Key="change_by">1</Data>
         </Insert>
     </DatabaseInstall>
     <DatabaseUpgrade Type="post">
@@ -46,19 +49,19 @@
             <Data Key="name" Type="Quote">AttachmentRename</Data>
             <Data Key="comments" Type="Quote">Rename an attachment</Data>
             <Data Key="valid_id">1</Data>
-            <Data Key="create_time" Type="Quote">2012-10-18 00:00:00</Data>
-            <Data Key="create_by" Type="Quote">1</Data>
-            <Data Key="change_time" Type="Quote">2012-10-18 00:00:00</Data>
-            <Data Key="change_by" Type="Quote">1</Data>
+            <Data Key="create_time">current_timestamp</Data>
+            <Data Key="create_by">1</Data>
+            <Data Key="change_time">current_timestamp</Data>
+            <Data Key="change_by">1</Data>
         </Insert>
         <Insert Table="ticket_history_type" Version="1.0.1">
             <Data Key="name" Type="Quote">AttachmentDelete</Data>
             <Data Key="comments" Type="Quote">Delete an attachment</Data>
             <Data Key="valid_id">1</Data>
-            <Data Key="create_time" Type="Quote">2012-10-18 00:00:00</Data>
-            <Data Key="create_by" Type="Quote">1</Data>
-            <Data Key="change_time" Type="Quote">2012-10-18 00:00:00</Data>
-            <Data Key="change_by" Type="Quote">1</Data>
+            <Data Key="create_time">current_timestamp</Data>
+            <Data Key="create_by">1</Data>
+            <Data Key="change_time">current_timestamp</Data>
+            <Data Key="change_by">1</Data>
         </Insert>
     </DatabaseUpgrade>
     <IntroInstall Type="post" Lang="en">
@@ -69,9 +72,22 @@
         group "Ticket" and subgroup "Core::Ticket".<br /><br />
       ]]>
     </IntroInstall>
+    <IntroInstall Type="post" Lang="hu">
+      <![CDATA[
+        Ha ArticleStorageDB tárolót használ, akkor át kell váltania ArticleStorageTSALDB tárolóra.
+        Ha ArticleStorageFS tárolót használ, akkor át kell váltania ArticleStorageTSALFS tárolóra.
+        A beállításokat a rendszerbeállításokon keresztül változtathatja meg. A lehetőségek a
+        „Ticket” csoportban, azon belül a „Core::Ticket” alcsoportban találhatók.<br /><br />
+      ]]>
+    </IntroInstall>
     <IntroUninstall Type="pre" Lang="en">
       <![CDATA[
         Don't forget to switch back to the original ArticleStorage type!
+      ]]>
+    </IntroUninstall>
+    <IntroUninstall Type="pre" Lang="hu">
+      <![CDATA[
+        Ne felejtsen el visszaváltani az eredeti bejegyzéstároló típusra!
       ]]>
     </IntroUninstall>
 </otrs_package>
