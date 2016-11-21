@@ -1,0 +1,81 @@
+=encoding utf-8
+
+=head1 NÉV
+
+TicketAttachments - egy jegy mellékleteinek kezelése.
+
+=head1 LEÍRÁS
+
+Ez a modul megjeleníti egy jegy összes mellékletét egy új felületi elemben a 
+jegynagyításban. Felsorolja az összes mellékletet, és megjeleníti a dátumokat, 
+így azonosítani tudja a helyes mellékleteket. Az összes melléklet hivatkozással 
+van ellátva, hogy letölthesse azokat.
+
+A mellékletek listája csoportosítható azon bejegyzés szerint, amelyhez 
+tartoznak. A bejegyzés hivatkozással van ellátva, így egyetlen kattintással 
+megtekintheti a bejegyzést.
+
+Ha engedélyezve van, akkor az ügyintézők törölhetik és/vagy átnevezhetik az 
+egyes bejegyzéseket. Ez segít a fontos bejegyzések könnyebb azonosításában.
+
+Az adminisztrátor meghatározhat egy listát azokkal a fájlnevekkel, amelyeknek 
+nem szabad megjelenniük a felületi elemben. Így az aláírások (mint az 
+I<smime.p7s>) nem növelik a mellékletek listáját.
+
+=head1 PRO VERZIÓ
+
+Egy kibővített verzió található a 
+L<http://feature-addons.de/otrs/Ticket%20Zoom/TicketAttachments> címen a 
+következő kiegészítő funkciókkal:
+
+=over 4
+
+=item * Mellékletek keresése
+
+=item * Mellékletek törlése különféle szűrők alapján
+
+=over 4
+
+=item * Fájlméret
+
+=item * Jegyállapot
+
+=item * Fájlnév
+
+=back
+
+=item * Mellékletek egyszerű újrahasznosítása az írás és/vagy a továbbítás 
+párbeszédablakokban
+
+=item * Az összes melléklet letöltése egy jegyből .zip fájlként
+
+=item * Az összes melléklet letöltése egy bejegyzésből .zip fájlként
+
+=back
+
+=head1 KÖSZÖNETNYILVÁNÍTÁS
+
+=over 4
+
+=item Moritz Lenz
+
+* Egy kis javítócsomag a felületi elem tartalmának ki- és bekapcsolásához
+
+=item Úr Balázs
+
+* Magyar fordítás
+
+=back
+
+=head1 SZERZŐ ÉS LICENC
+
+Copyright (c) 2012-2016 Renee Baecker (Perl-Services.de)
+
+Ez a modul az AGPL 3 feltételi szerint licencelt.
+
+=head1 MAGYAR FORDÍTÁS
+
+A magyar fordítást az OTRS-megoldások csapata készítette.
+Copyright (C) 2016 Úr Balázs, L<http://otrs-megoldasok.hu>
+
+=cut

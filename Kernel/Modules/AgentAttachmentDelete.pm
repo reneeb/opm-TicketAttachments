@@ -1,6 +1,6 @@
 # --
 # Kernel/Modules/AgentAttachmentDelete.pm - to get a closer view
-# Copyright (C) 2011 - 2014 Perl-Services.de, http://perl-services.de
+# Copyright (C) 2011-2016 Perl-Services.de, http://perl-services.de
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -11,6 +11,8 @@ package Kernel::Modules::AgentAttachmentDelete;
 
 use strict;
 use warnings;
+
+use Kernel::Language qw(Translatable);
 
 our $VERSION = 0.02;
 
@@ -43,16 +45,16 @@ sub Run {
     # check needed stuff
     if ( !$Self->{ArticleID} ) {
         return $LayoutObject->ErrorScreen(
-            Message => 'No ArticleID is given!',
-            Comment => 'Please contact the admin.',
+            Message => Translatable('No ArticleID is given!'),
+            Comment => Translatable('Please contact the administrator.'),
         );
     }
 
     # check needed stuff
     if ( !$ConfigObject->Get( 'Attachmentlist::CanDelete' ) ) {
         return $LayoutObject->ErrorScreen(
-            Message => 'Attachment deletion is not allowed!',
-            Comment => 'Please contact the admin.',
+            Message => Translatable('Attachment deletion is not allowed!'),
+            Comment => Translatable('Please contact the administrator.'),
         );
     }
 

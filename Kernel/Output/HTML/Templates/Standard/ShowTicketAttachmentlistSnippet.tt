@@ -50,7 +50,7 @@
                 PositionLeft: 'Center',
                 Buttons: [
                     {
-                        Label: "[% Translate("Ok") | html %]",
+                        Label: "[% Translate("Delete") | html %]",
                         Function: function() {
                             // call the URL 
                             document.location.href = $(link)[0].href;
