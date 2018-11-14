@@ -12,17 +12,18 @@
     <Filelist>
         <File Permission="644" Location="doc/en/TicketAttachments.pod"/>
         <File Permission="644" Location="doc/hu/TicketAttachments.pod"/>
-        <File Permission="644" Location="Kernel/Config/Files/TicketAttachments.xml"/>
+        <File Permission="644" Location="Kernel/Config/Files/XML/TicketAttachments.xml"/>
         <File Permission="644" Location="Kernel/Language/de_TicketAttachments.pm"/>
         <File Permission="644" Location="Kernel/Language/en_TicketAttachments.pm"/>
         <File Permission="644" Location="Kernel/Language/hu_TicketAttachments.pm"/>
         <File Permission="644" Location="Kernel/Modules/AgentAttachmentDelete.pm"/>
         <File Permission="644" Location="Kernel/Modules/AgentAttachmentRename.pm"/>
-        <File Permission="644" Location="Kernel/Output/HTML/OutputFilter/Attachmentlist.pm"/>
+        <File Permission="644" Location="Kernel/Output/HTML/TicketZoom/Attachmentlist.pm"/>
         <File Permission="644" Location="Kernel/Output/HTML/Templates/Standard/ShowTicketAttachmentlistSnippet.tt"/>
         <File Permission="644" Location="Kernel/Output/HTML/Templates/Standard/AgentAttachmentRename.tt"/>
-        <File Permission="644" Location="Kernel/System/Ticket/ArticleStorageTSALDB.pm"/>
-        <File Permission="644" Location="Kernel/System/Ticket/ArticleStorageTSALFS.pm"/>
+        <File Permission="644" Location="Kernel/System/Ticket/Article/Backend/MIMEBase/ArticleStorageTSALDB.pm"/>
+        <File Permission="644" Location="Kernel/System/Ticket/Article/Backend/MIMEBase/ArticleStorageTSALFS.pm"/>
+        <File Permission="644" Location="Kernel/System/TicketAttachments/Utils.pm"/>
     </Filelist>
     <DatabaseInstall Type="pre">
         <Insert Table="ticket_history_type">
