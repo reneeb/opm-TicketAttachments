@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<otrs_config version="2.0" init="Config">
+    <Setting Name="Ticket::Frontend::AgentTicketZoom###Widgets###003-TicketAttachment" Required="0" Valid="1">
+        <Description Translatable="1">AgentTicketZoom widget that displays ticket attachment data in the side bar.</Description>
+        <Navigation>PerlServices::TicketAttachments::Frontend::Agent::View::TicketZoom</Navigation>
+        <Value>
+            <Hash>
+                <Item Key="Module">Kernel::Output::HTML::TicketZoom::Attachmentlist</Item>
+                <Item Key="Location">Sidebar</Item>
+                <Item Key="Collapsed">0</Item>
+                <Item Key="Rank">003</Item>
+                <Item Key="Async">1</Item>
+            </Hash>
+        </Value>
+    </Setting>
+    <Setting Name="Attachmentlist::CanDelete" Required="0" Valid="1">
+        <Description Translatable="1">Enable/Disable deletion feature.</Description>
+        <Navigation>Core</Navigation>
+        <Value>
+            <Item ValueType="Checkbox">0</Item>
+        </Value>
+    </Setting>
+    <Setting Name="Attachmentlist::ConfirmDeletionDialog" Required="0" Valid="1">
+        <Description Translatable="1">Show a dialog to confirm the deletion of the attachment.</Description>
+        <Navigation>Core</Navigation>
+        <Value>
+            <Item ValueType="Checkbox">0</Item>
+        </Value>
+    </Setting>
+    <Setting Name="Attachmentlist::CanRename" Required="0" Valid="1">
+        <Description Translatable="1">Enable/Disable rename feature.</Description>
+        <Navigation>Core</Navigation>
+        <Value>
+            <Item ValueType="Checkbox">0</Item>
+        </Value>
+    </Setting>
+    <Setting Name="Frontend::Module###AgentAttachmentDelete" Required="0" Valid="1">
+        <Description Translatable="1">Frontend module registration for attachment deletion module.</Description>
+        <Navigation>Frontend::Agent::ModuleRegistration</Navigation>
+        <Value>
+            <Item ValueType="FrontendRegistration">
+                <Hash>
+                    <Item Key="Group">
+                        <Array>
+                        </Array>
+                    </Item>
+                    <Item Key="GroupRo">
+                        <Array>
+                        </Array>
+                    </Item>
+                    <Item Key="Description" Translatable="1">Delete ticket attachments.</Item>
+                    <Item Key="NavBarName">Ticket</Item>
+                    <Item Key="Title" Translatable="1">Delete Ticket Attachments</Item>
+                </Hash>
+            </Item>
+        </Value>
+    </Setting>
+    <Setting Name="Frontend::Navigation###AgentAttachmentDelete###003-TicketAttachments" Required="0" Valid="0">
+        <Description Translatable="1">Main menu item registration.</Description>
+        <Navigation>Frontend::Agent::ModuleRegistration::MainMenu</Navigation>
+        <Value>
+            <Array>
+                <DefaultItem ValueType="FrontendNavigation">
+                    <Hash>
+                    </Hash>
+                </DefaultItem>
+            </Array>
+        </Value>
+    </Setting>
+    <Setting Name="Frontend::Module###AgentAttachmentRename" Required="0" Valid="1">
+        <Description Translatable="1">Frontend module registration for attachment rename module.</Description>
+        <Navigation>Frontend::Agent::ModuleRegistration</Navigation>
+        <Value>
+            <Item ValueType="FrontendRegistration">
+                <Hash>
+                    <Item Key="Group">
+                        <Array>
+                        </Array>
+                    </Item>
+                    <Item Key="GroupRo">
+                        <Array>
+                        </Array>
+                    </Item>
+                    <Item Key="Description" Translatable="1">Rename ticket attachments.</Item>
+                    <Item Key="NavBarName">Ticket</Item>
+                    <Item Key="Title" Translatable="1">Rename Ticket Attachments</Item>
+                </Hash>
+            </Item>
+        </Value>
+    </Setting>
+    <Setting Name="Frontend::Navigation###AgentAttachmentRename###003-TicketAttachments" Required="0" Valid="0">
+        <Description Translatable="1">Main menu item registration.</Description>
+        <Navigation>Frontend::Agent::ModuleRegistration::MainMenu</Navigation>
+        <Value>
+            <Array>
+                <DefaultItem ValueType="FrontendNavigation">
+                    <Hash>
+                    </Hash>
+                </DefaultItem>
+            </Array>
+        </Value>
+    </Setting>
+    <Setting Name="Attachmentlist::ExcludeFilenames" Required="0" Valid="0">
+        <Description Translatable="1">Files with those names are not listed.</Description>
+        <Navigation>Core</Navigation>
+        <Value>
+            <Array>
+                <Item>smime.p7s</Item>
+            </Array>
+        </Value>
+    </Setting>
+    <Setting Name="Attachmentlist::ExcludeMethod" Required="0" Valid="0">
+        <Description Translatable="1">Define which method is used to exclude files.</Description>
+        <Navigation>Core</Navigation>
+        <Value>
+            <Item ValueType="Select" SelectedID="string_match">
+                <Item ValueType="Option" Value="string_match" Translatable="1">exact string match</Item>
+                <Item ValueType="Option" Value="pattern_match" Translatable="1">pattern match</Item>
+            </Item>
+        </Value>
+    </Setting>
+    <Setting Name="Attachmentlist::Debug" Required="0" Valid="1">
+        <Description Translatable="1">Enable/Disable debugging output.</Description>
+        <Navigation>Core</Navigation>
+        <Value>
+            <Item ValueType="Checkbox">0</Item>
+        </Value>
+    </Setting>
+    <Setting Name="TicketAttachments::Position" Required="0" Valid="1">
+        <Description Translatable="1">Define where in the Sidebar the ticket attachment widget is located.</Description>
+        <Navigation>Core</Navigation>
+        <Value>
+            <Item ValueType="Select" SelectedID="top">
+                <Item ValueType="Option" Value="top" Translatable="1">Top</Item>
+                <Item ValueType="Option" Value="bottom" Translatable="1">Bottom</Item>
+            </Item>
+        </Value>
+    </Setting>
+</otrs_config>

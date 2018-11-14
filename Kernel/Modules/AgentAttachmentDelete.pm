@@ -1,6 +1,5 @@
 # --
-# Kernel/Modules/AgentAttachmentDelete.pm - to get a closer view
-# Copyright (C) 2011-2016 Perl-Services.de, http://perl-services.de
+# Copyright (C) 2011 - 2018 Perl-Services.de, http://perl-services.de
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -13,8 +12,6 @@ use strict;
 use warnings;
 
 use Kernel::Language qw(Translatable);
-
-our $VERSION = 0.02;
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -38,15 +35,16 @@ sub new {
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
-    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
-    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+    my $LayoutObject  = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $TicketObject  = $Kernel::OM->Get('Kernel::System::Ticket');
+    my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+    my $ConfigObject  = $Kernel::OM->Get('Kernel::Config');
 
     # check needed stuff
     if ( !$Self->{ArticleID} ) {
         return $LayoutObject->ErrorScreen(
             Message => Translatable('No ArticleID is given!'),
-            Comment => Translatable('Please contact the administrator.'),
+            Comment => Translatable('Please contact the admin.'),
         );
     }
 
@@ -54,21 +52,14 @@ sub Run {
     if ( !$ConfigObject->Get( 'Attachmentlist::CanDelete' ) ) {
         return $LayoutObject->ErrorScreen(
             Message => Translatable('Attachment deletion is not allowed!'),
-            Comment => Translatable('Please contact the administrator.'),
+            Comment => Translatable('Please contact the admin.'),
         );
     }
-
-    my %Article = $TicketObject->ArticleGet(
-        ArticleID => $Self->{ArticleID},
-        UserID    => $Self->{UserID},
-    );
-
-    my $TicketID = $Article{TicketID};
 
     # check permissions
     my $Access = $TicketObject->TicketPermission(
         Type     => 'rw',
-        TicketID => $TicketID,
+        TicketID => $Self->{TicketID},
         UserID   => $Self->{UserID}
     );
 
@@ -77,16 +68,23 @@ sub Run {
         return $LayoutObject->NoPermission( WithHeader => 'yes' );
     }
 
-    $TicketObject->ArticleDeleteSingleAttachment(
+    my $BackendObject = $ArticleObject->BackendForArticle(
+        ArticleID => $Self->{ArticleID},
+        TicketID  => $Self->{TicketID},
+    );
+
+    my $StorageModule = $Kernel::OM->Get( $BackendObject->{ArticleStorageModule} );
+
+    $StorageModule->ArticleDeleteSingleAttachment(
         ArticleID => $Self->{ArticleID},
         UserID    => $Self->{UserID},
         FileID    => $Self->{FileID},
-        TicketID  => $TicketID,
+        TicketID  => $Self->{TicketID},
     );
 
     # return output
     return $LayoutObject->Redirect(
-        OP => "Action=AgentTicketZoom;TicketID=$TicketID",
+        OP => "Action=AgentTicketZoom;TicketID=$Self->{TicketID}",
     );
 }
 

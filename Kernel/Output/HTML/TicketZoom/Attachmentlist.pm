@@ -1,13 +1,12 @@
 # --
-# Kernel/Output/HTML/OutputFilter/Attachmentlist.pm
-# Copyright (C) 2011 - 2015 Perl-Services.de, http://www.perl-services.de/
+# Copyright (C) 2011 - 2018 Perl-Services.de, http://www.perl-services.de/
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
-package Kernel::Output::HTML::OutputFilter::Attachmentlist;
+package Kernel::Output::HTML::TicketZoom::Attachmentlist;
 
 use strict;
 use warnings;
@@ -43,17 +42,14 @@ sub new {
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
-    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
-    my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
-    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
-    my $MainObject   = $Kernel::OM->Get('Kernel::System::Main');
-
-    # get template name
-    my $Templatename = $Param{TemplateFile} || '';
-    return 1 if !$Templatename;
-
-    return 1 if $Templatename ne 'AgentTicketZoom';
+    my $ConfigObject  = $Kernel::OM->Get('Kernel::Config');
+    my $LayoutObject  = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $ParamObject   = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $TicketObject  = $Kernel::OM->Get('Kernel::System::Ticket');
+    my $UtilsObject   = $Kernel::OM->Get('Kernel::System::TicketAttachments::Utils');
+    my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+    my $MainObject    = $Kernel::OM->Get('Kernel::System::Main');
+    my $LogObject     = $Kernel::OM->Get('Kernel::System::Log');
 
     # define if rich text should be used
     $Self->{RichText}
@@ -62,18 +58,20 @@ sub Run {
         || 0;
 
     # strip html and ascii attachments of content
-    $Self->{StripPlainBodyAsAttachment} = 1;
+    my %Opts = (
+        ExcludePlainText => 1,
+    );
 
     # check if rich text is enabled, if not only stip ascii attachments
-    if ( !$Self->{RichText} ) {
-        $Self->{StripPlainBodyAsAttachment} = 2;
+    if ( $Self->{RichText} ) {
+        $Opts{ExcludeHTMLBody} = 1;
     }
 
     my ($TicketID) = $ParamObject->GetParam( Param => 'TicketID' );;
 
-    return 1 if !$TicketID;
+    return {} if !$TicketID;
 
-    my @ArticleIndex    = $TicketObject->ArticleIndex( TicketID => $TicketID );
+    my @ArticleIndex    = $ArticleObject->ArticleList( TicketID => $TicketID );
     my $CanDelete       = $ConfigObject->Get( 'Attachmentlist::CanDelete' );
     my $CanRename       = $ConfigObject->Get( 'Attachmentlist::CanRename' );
     my $ConfirmDeletion = $ConfigObject->Get( 'Attachmentlist::ConfirmDeletionDialog' );
@@ -93,17 +91,35 @@ sub Run {
 
     my @ExcludeFilenames = @{ $ConfigObject->Get( 'Attachmentlist::ExcludeFilenames' ) || [] };
 
-    for my $ArticleID ( @ArticleIndex ) {
+    for my $Article ( @ArticleIndex ) {
 
-        my %Article = $TicketObject->ArticleGet( ArticleID => $ArticleID );
+        my $ArticleID = $Article->{ArticleID};
+
+        my $BackendObject = $ArticleObject->BackendForArticle(
+            TicketID  => $TicketID,
+            ArticleID => $ArticleID,
+        );
+
+
+        next ARTICLEID if !$BackendObject->can('ArticleAttachmentIndex');
+
+        my %Article = $BackendObject->ArticleGet(
+            TicketID  => $TicketID,
+            ArticleID => $ArticleID,
+        );
 
         # get attachment index (without attachments)
-        my %AtmIndex = $TicketObject->ArticleAttachmentIndex(
-            ArticleID                  => $ArticleID,
-            StripPlainBodyAsAttachment => $Self->{StripPlainBodyAsAttachment},
-            Article                    => \%Article,
-            UserID                     => $Self->{UserID},
+        my %AtmIndex = $BackendObject->ArticleAttachmentIndex(
+            ArticleID => $ArticleID,
+            TicketID  => $TicketID,
+            Article   => \%Article,
+            %Opts,
+            UserID    => $Self->{UserID},
         );
+
+        my $StorageModule = $Kernel::OM->Get( $BackendObject->{ArticleStorageModule} );
+
+        my $AttachmentNr = 0;
 
         ATTACHMENTID:
         for my $AttachmentID ( sort keys %AtmIndex ) {
@@ -112,12 +128,19 @@ sub Run {
 
             next ATTACHMENTID if first { $Self->_Check( $Filename, $_ ) } @ExcludeFilenames;
 
+            my $Size = $UtilsObject->FormatSize( $AtmIndex{$AttachmentID}->{FilesizeRaw} );
+
+            $AttachmentNr++;
+
             my %AttachmentInfo = (
-                AttachmentID    => $AttachmentID, 
+                AttachmentID    => $AttachmentID,
                 AttachmentTitle => $Filename,
-                AttachmentDate  => $Article{Created},
+                AttachmentDate  => $Article{CreateTime},
                 ArticleID       => $Article{ArticleID},
                 TicketID        => $Article{TicketID},
+                Filesize        => $Size,
+                ContentType     => $AtmIndex{$AttachmentID}->{ContentType},
+                AttachmentNr    => $AttachmentNr,
             );
 
             $LayoutObject->Block(
@@ -156,29 +179,21 @@ sub Run {
         }
     }
 
-    if ( $HasAttachments ) {
-    
-        if ( $Templatename eq 'AgentTicketZoom' ) {
-            my $Snippet = $LayoutObject->Output(
-                TemplateFile => 'ShowTicketAttachmentlistSnippet',
-                Data         => {
-                    TicketID => $TicketID,
-                },
-            ); 
-    
-            #scan html output and generate new html input
-            my $Position = $ConfigObject->Get( 'TicketAttachments::Position' ) || 'top';
+    return {} if !$HasAttachments;
 
-            if ( $Position eq 'bottom' ) {
-                ${ $Param{Data} } =~ s{(</div> \s+ <div \s+ class="ContentColumn)}{ $Snippet $1 }xms;
-            }
-            else {
-                ${ $Param{Data} } =~ s{(<div \s+ class="SidebarColumn">)}{$1 $Snippet}xsm;
-            }
-        }
-    }
+    my $Snippet = $LayoutObject->Output(
+        TemplateFile => 'ShowTicketAttachmentlistSnippet',
+        Data         => {
+            TicketID => $TicketID,
+        },
+    ); 
 
-    return ${ $Param{Data} };
+    my $Config = $Param{Config};
+
+    return {
+        Output => $Snippet,
+        Rank   => $Config->{Rank},
+    };
 }
 
 sub _Check {

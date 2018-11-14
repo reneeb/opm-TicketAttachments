@@ -1,6 +1,5 @@
 # --
-# Kernel/Modules/AgentAttachmentRename.pm - to get a closer view
-# Copyright (C) 2012-2016 Perl-Services.de, http://perl-services.de
+# Copyright (C) 2012 - 2018 Perl-Services.de, http://perl-services.de
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
@@ -13,9 +12,8 @@ use strict;
 use warnings;
 
 use Kernel::Language qw(Translatable);
-use List::Util qw(first);
 
-our $VERSION = 0.02;
+use List::Util qw(first);
 
 sub new {
     my ( $Type, %Param ) = @_;
@@ -35,12 +33,13 @@ sub new {
 sub Run {
     my ( $Self, %Param ) = @_;
 
-    my $ParamObject  = $Kernel::OM->Get('Kernel::System::Web::Request');
-    my $LayoutObject = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
-    my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
-    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
-    my $MainObject   = $Kernel::OM->Get('Kernel::System::Main');
-    my $LogObject    = $Kernel::OM->Get('Kernel::System::Log');
+    my $ParamObject   = $Kernel::OM->Get('Kernel::System::Web::Request');
+    my $LayoutObject  = $Kernel::OM->Get('Kernel::Output::HTML::Layout');
+    my $ConfigObject  = $Kernel::OM->Get('Kernel::Config');
+    my $TicketObject  = $Kernel::OM->Get('Kernel::System::Ticket');
+    my $ArticleObject = $Kernel::OM->Get('Kernel::System::Ticket::Article');
+    my $MainObject    = $Kernel::OM->Get('Kernel::System::Main');
+    my $LogObject     = $Kernel::OM->Get('Kernel::System::Log');
 
     my %GetParam;
     for my $ParamName ( qw/ArticleID FileID TicketID NewFilename/ ) {
@@ -48,10 +47,10 @@ sub Run {
     }
 
     # check needed stuff
-    if ( !$GetParam{ArticleID} ) {
+    if ( !$GetParam{ArticleID} || !$GetParam{TicketID} ) {
         return $LayoutObject->ErrorScreen(
-            Message => Translatable('No ArticleID is given!'),
-            Comment => Translatable('Please contact the administrator.'),
+            Message => Translatable('No ArticleID or TicketID is given!'),
+            Comment => Translatable('Please contact the admin.'),
         );
     }
 
@@ -59,36 +58,39 @@ sub Run {
     if ( !$ConfigObject->Get( 'Attachmentlist::CanRename' ) ) {
         return $LayoutObject->ErrorScreen(
             Message => Translatable('Attachment rename is not allowed!'),
-            Comment => Translatable('Please contact the administrator.'),
+            Comment => Translatable('Please contact the admin.'),
         );
     }
-
-    my %Article = $TicketObject->ArticleGet(
-        ArticleID => $GetParam{ArticleID},
-        UserID    => $Self->{UserID},
-    );
-
-    if ( !%Article ) {
-        return $LayoutObject->ErrorScreen(
-            Message => Translatable('Article not found'),
-            Comment => Translatable('Please contact the administrator.'),
-        );
-    }
-
-    my $TicketID = $Article{TicketID};
 
     # check if the user belongs to a group
     # that is allowed to rename attachments
     my $Access = $TicketObject->TicketPermission(
         Type     => 'rw',
-        TicketID => $TicketID,
+        TicketID => $GetParam{TicketID},
         UserID   => $Self->{UserID}
     );
 
     if ( $Self->{Debug} ) {
         $LogObject->Log(
-            Priority => 'notice',
-            Message  => "$TicketID // $Access",
+            Priority => 'debug',
+            Message  => "$GetParam{TicketID} // $Access",
+        );
+    }
+
+    my $BackendObject = $ArticleObject->BackendForArticle(
+        ArticleID => $GetParam{ArticleID},
+        TicketID  => $GetParam{TicketID},
+    );
+
+    my %Article = $BackendObject->ArticleGet(
+        ArticleID => $GetParam{ArticleID},
+        TicketID  => $GetParam{TicketID},
+    );
+
+    if ( !%Article ) {
+        return $LayoutObject->ErrorScreen(
+            Message => 'Article not found',
+            Comment => 'Please contact the admin.',
         );
     }
 
@@ -100,8 +102,8 @@ sub Run {
         );
 
         $Output .= $LayoutObject->Warning(
-            Message => Translatable('Sorry, you need "rw permissions" to do this action!'),
-            Comment => Translatable('Please change the owner first.'),
+            Message => 'Sorry, you need "rw permissions" to do this action!',
+            Comment => 'Please change the owner first.',
         );
 
         $Output .= $LayoutObject->Footer(
@@ -111,6 +113,8 @@ sub Run {
         return $Output;
     }
 
+    my $StorageModule  = $Kernel::OM->Get( $BackendObject->{ArticleStorageModule} );
+
     if ( $Self->{Subaction} eq 'Rename' ) {
         my $CheckFilename = $MainObject->FilenameCleanUp(
             Filename => $GetParam{NewFilename},
@@ -119,11 +123,11 @@ sub Run {
 
         my $Success;
         if ( $CheckFilename eq $GetParam{NewFilename} ) {
-            $Success = $TicketObject->AttachmentRename(
+            $Success = $StorageModule->AttachmentRename(
                 ArticleID => $GetParam{ArticleID},
+                TicketID  => $GetParam{TicketID},
                 UserID    => $Self->{UserID},
                 FileID    => $GetParam{FileID},
-                TicketID  => $TicketID,
                 Filename  => $GetParam{NewFilename},
             );
         }
@@ -152,7 +156,7 @@ sub Run {
         Value => $Article{TicketNumber},
     );
 
-    my ($ID,$Filename) = $Self->_AttachmentInfoGet(
+    my ($ID,$Filename) = $StorageModule->AttachmentInfoGet(
         ArticleID => $GetParam{ArticleID},
         FileID    => $GetParam{FileID},
     );
@@ -172,32 +176,5 @@ sub Run {
 
     return $Output;
 }
-
-sub _AttachmentInfoGet {
-    my ($Self, %Param) = @_;
-
-    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
-
-    my %GetParam;
-    # try database
-    return if !$DBObject->Prepare(
-        SQL => 'SELECT id, filename FROM article_attachment WHERE article_id = ? ORDER BY filename, id',
-        Bind   => [ \$Param{ArticleID} ],
-        Limit  => $Param{FileID},
-    );
-
-    my $AttachmentID;
-    my $Filename;
-    while ( my @Row = $DBObject->FetchrowArray() ) {
-        $AttachmentID = $Row[0];
-        $Filename     = $Row[1];
-    }
-
-    return if !$AttachmentID;
-    return if !$Filename;
-
-    return ($AttachmentID, $Filename);
-}
-
 
 1;

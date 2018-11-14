@@ -1,20 +1,27 @@
 # --
-# Kernel/System/Ticket/ArticleStorageTSALDB.pm - article storage module for OTRS kernel
-# Copyright (C) 2012 - 2014 Perl-Services.de, http://perl-services.de
+# Copyright (C) 2012 - 2018 Perl-Services.de, http://perl-services.de
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
 # did not receive this file, see http://www.gnu.org/licenses/agpl.txt.
 # --
 
-package Kernel::System::Ticket::ArticleStorageTSALDB;
+package Kernel::System::Ticket::Article::Backend::MIMEBase::ArticleStorageTSALDB;
 
 use strict;
 use warnings;
 
-use Kernel::System::Ticket::ArticleStorageDB;
+use MIME::Base64;
 
-our @ISA = qw(Kernel::System::Ticket::ArticleStorageDB);
+use parent qw(Kernel::System::Ticket::Article::Backend::MIMEBase::ArticleStorageDB);
+
+our @ObjectDependencies = qw(
+    Kernel::System::Ticket
+    Kernel::System::Log
+    Kernel::Config
+    Kernel::System::DB
+    Kernel::System::Main
+);
 
 sub AttachmentExists {
     my ($Self, %Param) = @_;
@@ -38,7 +45,7 @@ sub AttachmentExists {
 
     # check if attachment already exists
     return if !$DBObject->Prepare(
-        SQL   => 'SELECT id FROM article_attachment WHERE article_id = ? AND filename = ?',
+        SQL   => 'SELECT id FROM article_data_mime_attachment WHERE article_id = ? AND filename = ?',
         Bind  => [ \$Param{ArticleID}, \$Param{Filename} ],
         Limit => 1,
     );
@@ -67,6 +74,7 @@ sub AttachmentRename {
     my $DBObject     = $Kernel::OM->Get('Kernel::System::DB');
     my $MainObject   = $Kernel::OM->Get('Kernel::System::Main');
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
     
     # check needed stuff
     for my $Needed (qw(ArticleID UserID FileID TicketID Filename)) {
@@ -111,7 +119,7 @@ sub AttachmentRename {
         return;
     }
 
-    my ($AttachmentID, $Filename) = $Self->_AttachmentInfoGet( %Param );
+    my ($AttachmentID, $Filename) = $Self->AttachmentInfoGet( %Param );
 
     if ( $Debug ) {
         $LogObject->Log(
@@ -125,7 +133,7 @@ sub AttachmentRename {
 
     # rename attachment in database
     return if !$DBObject->Do(
-        SQL  => 'UPDATE article_attachment SET filename = ? WHERE article_id = ? AND id = ?',
+        SQL  => 'UPDATE article_data_mime_attachment SET filename = ? WHERE article_id = ? AND id = ?',
         Bind => [ \$Param{Filename}, \$Param{ArticleID}, \$AttachmentID ],
     );
 
@@ -137,7 +145,7 @@ sub AttachmentRename {
     }
 
     # add history entry
-    $Self->HistoryAdd(
+    $TicketObject->HistoryAdd(
         TicketID     => $Param{TicketID},
         ArticleID    => $Param{ArticleID},
         HistoryType  => 'AttachmentRename',
@@ -145,7 +153,7 @@ sub AttachmentRename {
         CreateUserID => $Param{UserID},
     );
 
-    $Self->EventHandler(
+    $TicketObject->EventHandler(
         Event => 'AttachmentRename',
         Data  => {
             ArticleID => $Param{ArticleID},
@@ -160,7 +168,7 @@ sub AttachmentRename {
     return 1 if $Param{OnlyMyBackend};
 
     # rename attachment in filesystem
-    my $ContentPath = $Self->ArticleGetContentPath( ArticleID => $Param{ArticleID} );
+    my $ContentPath = $Self->_ArticleContentPathGet( ArticleID => $Param{ArticleID} );
     my $Path = "$Self->{ArticleDataDir}/$ContentPath/$Param{ArticleID}";
     if ( -e $Path ) {
         my @List = $MainObject->DirectoryRead(
@@ -196,6 +204,7 @@ sub ArticleDeleteSingleAttachment {
     my $DBObject     = $Kernel::OM->Get('Kernel::System::DB');
     my $MainObject   = $Kernel::OM->Get('Kernel::System::Main');
     my $ConfigObject = $Kernel::OM->Get('Kernel::Config');
+    my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
     
     # check needed stuff
     for my $Needed (qw(ArticleID UserID FileID TicketID)) {
@@ -208,14 +217,14 @@ sub ArticleDeleteSingleAttachment {
         }
     }
 
-    my ($AttachmentID, $Filename) = $Self->_AttachmentInfoGet( %Param );
+    my ($AttachmentID, $Filename) = $Self->AttachmentInfoGet( %Param );
 
     return if !$AttachmentID;
     return if !$Filename;
 
     # delete attachments
     return if !$DBObject->Do(
-        SQL  => 'DELETE FROM article_attachment WHERE article_id = ? AND id = ?',
+        SQL  => 'DELETE FROM article_data_mime_attachment WHERE article_id = ? AND id = ?',
         Bind => [
             \$Param{ArticleID},
             \$AttachmentID,
@@ -223,7 +232,7 @@ sub ArticleDeleteSingleAttachment {
     );
 
     # add history entry
-    $Self->HistoryAdd(
+    $TicketObject->HistoryAdd(
         TicketID     => $Param{TicketID},
         ArticleID    => $Param{ArticleID},
         HistoryType  => 'AttachmentDelete',
@@ -232,7 +241,7 @@ sub ArticleDeleteSingleAttachment {
     );
 
     # trigger event
-    $Self->EventHandler(
+    $TicketObject->EventHandler(
         Event => 'SingleTicketAttachmentDelete',
         Data  => {
             ArticleID => $Param{ArticleID},
@@ -247,7 +256,7 @@ sub ArticleDeleteSingleAttachment {
     return 1 if $Param{OnlyMyBackend};
 
     # delete from fs
-    my $ContentPath = $Self->ArticleGetContentPath( ArticleID => $Param{ArticleID} );
+    my $ContentPath = $Self->_ArticleContentPathGet( ArticleID => $Param{ArticleID} );
     my $Path = "$Self->{ArticleDataDir}/$ContentPath/$Param{ArticleID}";
     if ( -e $Path ) {
         my @List = $MainObject->DirectoryRead(
@@ -274,14 +283,15 @@ sub ArticleDeleteSingleAttachment {
     return 1;
 }
 
-sub _AttachmentInfoGet {
+sub AttachmentInfoGet {
     my ($Self, %Param) = @_;
 
-    my $DBObject = $Kernel::OM->Get('Kernel::System::DB');
+    my $DBObject    = $Kernel::OM->Get('Kernel::System::DB');
+    my $UtilsObject = $Kernel::OM->Get('Kernel::System::TicketAttachments::Utils');
     
     # try database
     return if !$DBObject->Prepare(
-        SQL => 'SELECT id, filename, content_size FROM article_attachment WHERE article_id = ? ORDER BY filename, id',
+        SQL => 'SELECT id, filename, content_size FROM article_data_mime_attachment WHERE article_id = ? ORDER BY filename, id',
         Bind   => [ \$Param{ArticleID} ],
         Limit  => $Param{FileID},
     );
@@ -298,25 +308,9 @@ sub _AttachmentInfoGet {
     return if !$AttachmentID;
     return if !$Filename;
 
-    $Size = _FormatSize( $Size );
+    $Size = $UtilsObject->FormatSize( $Size );
 
     return ($AttachmentID, $Filename, $Size);
-}
-
-sub _FormatSize {
-    my ($Size) = @_;
-
-    my $Formatted = "$Size B";
-    my $KB        = 1024;
-
-    if ( $Size > $KB * 1024 ) {
-        $Formatted = sprintf "%.2f MB", $Size / ( $KB * 1024 );
-    }
-    elsif ( $Size > $KB ) {
-        $Formatted = sprintf "%.2f KB", $Size / $KB;
-    }
-
-    return $Formatted;
 }
 
 1;
