@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <otrs_package version="1.0">
     <Name>TicketAttachments</Name>
-    <Version>1.6.2</Version>
+    <Version>1.6.3</Version>
     <Framework>6.0.x</Framework>
     <Framework>6.1.x</Framework>
+    <Framework>6.2.x</Framework>
     <Vendor>Perl-Services.de</Vendor>
     <URL>http://www.perl-services.de/</URL>
     <License>GNU AFFERO GENERAL PUBLIC LICENSE Version 3, November 2007</License>
     <Description Lang="en">Show all attachments that belong to the ticket in an extra widget in ticket zoom.</Description>
     <Description Lang="de">Zeige alle Anhänge eines Tickets in einer extra Box in der Ticketansicht.</Description>
     <Description Lang="hu">A jegyhez tartozó összes melléklet megjelenítése egy további felületi elemen a jegynagyításban.</Description>
-    <ChangeLog Version="1.6.2" Date="2021-10-07 14:01:00">Added the Framework version 6.1.x for Znuny 6.1.1</ChangeLog>
     <Filelist>
         <File Permission="644" Location="doc/en/TicketAttachments.pod"/>
         <File Permission="644" Location="doc/hu/TicketAttachments.pod"/>
