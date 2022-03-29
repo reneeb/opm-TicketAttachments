@@ -15,21 +15,21 @@
     </Setting>
     <Setting Name="Attachmentlist::CanDelete" Required="0" Valid="1">
         <Description Translatable="1">Enable/Disable deletion feature.</Description>
-        <Navigation>Core</Navigation>
+        <Navigation>PerlServices::TicketAttachments::Core</Navigation>
         <Value>
             <Item ValueType="Checkbox">0</Item>
         </Value>
     </Setting>
     <Setting Name="Attachmentlist::ConfirmDeletionDialog" Required="0" Valid="1">
         <Description Translatable="1">Show a dialog to confirm the deletion of the attachment.</Description>
-        <Navigation>Core</Navigation>
+        <Navigation>PerlServices::TicketAttachments::Core</Navigation>
         <Value>
             <Item ValueType="Checkbox">0</Item>
         </Value>
     </Setting>
     <Setting Name="Attachmentlist::CanRename" Required="0" Valid="1">
         <Description Translatable="1">Enable/Disable rename feature.</Description>
-        <Navigation>Core</Navigation>
+        <Navigation>PerlServices::TicketAttachments::Core</Navigation>
         <Value>
             <Item ValueType="Checkbox">0</Item>
         </Value>
@@ -102,7 +102,7 @@
     </Setting>
     <Setting Name="Attachmentlist::ExcludeFilenames" Required="0" Valid="0">
         <Description Translatable="1">Files with those names are not listed.</Description>
-        <Navigation>Core</Navigation>
+        <Navigation>PerlServices::TicketAttachments::Core</Navigation>
         <Value>
             <Array>
                 <Item>smime.p7s</Item>
@@ -111,7 +111,7 @@
     </Setting>
     <Setting Name="Attachmentlist::ExcludeMethod" Required="0" Valid="0">
         <Description Translatable="1">Define which method is used to exclude files.</Description>
-        <Navigation>Core</Navigation>
+        <Navigation>PerlServices::TicketAttachments::Core</Navigation>
         <Value>
             <Item ValueType="Select" SelectedID="string_match">
                 <Item ValueType="Option" Value="string_match" Translatable="1">exact string match</Item>
@@ -121,14 +121,14 @@
     </Setting>
     <Setting Name="Attachmentlist::Debug" Required="0" Valid="1">
         <Description Translatable="1">Enable/Disable debugging output.</Description>
-        <Navigation>Core</Navigation>
+        <Navigation>PerlServices::TicketAttachments::Core</Navigation>
         <Value>
             <Item ValueType="Checkbox">0</Item>
         </Value>
     </Setting>
     <Setting Name="TicketAttachments::Position" Required="0" Valid="1">
         <Description Translatable="1">Define where in the Sidebar the ticket attachment widget is located.</Description>
-        <Navigation>Core</Navigation>
+        <Navigation>PerlServices::TicketAttachments::Core</Navigation>
         <Value>
             <Item ValueType="Select" SelectedID="top">
                 <Item ValueType="Option" Value="top" Translatable="1">Top</Item>
