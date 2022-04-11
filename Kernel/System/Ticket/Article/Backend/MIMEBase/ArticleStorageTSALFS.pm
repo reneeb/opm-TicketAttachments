@@ -56,7 +56,7 @@ sub AttachmentRename {
     my $DBObject     = $Kernel::OM->Get('Kernel::System::DB');
     my $MainObject   = $Kernel::OM->Get('Kernel::System::Main');
     my $TicketObject = $Kernel::OM->Get('Kernel::System::Ticket');
-    
+
     # check needed stuff
     for my $Needed (qw(ArticleID UserID FileID TicketID Filename)) {
         if ( !$Param{$Needed} ) {
@@ -97,7 +97,8 @@ sub AttachmentRename {
     if ( $Debug ) {
         $LogObject->Log(
             Priority => 'debug',
-            Message  => "Rename ID $AttachmentID // File $Filename",
+            Message  => ( sprintf "Rename ID %s // File %s",
+                $AttachmentID // '', $Filename // '' ),
         );
     }
 
@@ -139,7 +140,7 @@ sub AttachmentRename {
                     \.disposition
                 )?
                 \z
-            }{$Param{Filename}$1}xms;
+            }{$Param{Filename} . ($1 // '')}exms;
 
             if ( $Debug ) {
                 $LogObject->Log(
@@ -399,7 +400,8 @@ sub AttachmentInfoGet {
     if ( $Debug ) {
         $LogObject->Log(
             Priority => 'debug',
-            Message  => "Filename: $Filename // Filesize: $Filesize",
+            Message  => ( sprintf "Filename: %s // Filesize: %s",
+                $Filename // '', $Filesize // '' ),
         );
     }
 

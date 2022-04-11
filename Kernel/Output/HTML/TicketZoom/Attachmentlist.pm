@@ -150,6 +150,9 @@ sub Run {
 
             $HasAttachments++;
 
+            my $Disposition = $AtmIndex{$AttachmentID}->{Disposition};
+            next ATTACHMENTID if $Disposition && 'inline' eq $Disposition;
+
             if ( ( $CanDelete && $Access ) || ( $CanRename && $Access ) ) {
                 $LayoutObject->Block(
                     Name => 'Links',

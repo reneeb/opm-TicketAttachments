@@ -135,7 +135,7 @@ sub Run {
         if ( $Self->{Debug} ) {
             $LogObject->Log(
                 Priority => 'notice',
-                Message  => "Success: $Success",
+                Message  => sprintf "Success: %s", $Success // '<no>',
             );
         }
 
