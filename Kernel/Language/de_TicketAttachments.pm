@@ -1,6 +1,6 @@
 # --
 # Kernel/Language/de_TicketAttachments.pm - German translations for TicketAttachments
-# Copyright (C) 2012-2016 Perl-Services.de, http://perl-services.de
+# Copyright (C) 2012 - 2022 Perl-Services.de, https://www.perl-services.de
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
 # the enclosed file COPYING for license information (AGPL). If you
