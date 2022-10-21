@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <otrs_package version="1.0">
     <Name>TicketAttachments</Name>
-    <Version>1.6.5</Version>
+    <Version>1.6.6</Version>
     <Framework>6.0.x</Framework>
     <Framework>6.1.x</Framework>
     <Framework>6.2.x</Framework>
