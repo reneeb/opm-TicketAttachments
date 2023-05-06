@@ -1,6 +1,6 @@
 # --
 # Kernel/Language/hu_TicketAttachments.pm - Hungarian translations for TicketAttachments
-# Copyright (C) 2012 - 2022 Perl-Services.de, https://www.perl-services.de
+# Copyright (C) 2012 - 2023 Perl-Services.de, https://www.perl-services.de
 # Copyright (C) 2016 Balázs Úr, http://www.otrs-megoldasok.hu
 # --
 # This software comes with ABSOLUTELY NO WARRANTY. For details, see
